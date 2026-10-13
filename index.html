@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Feliz Aniversario, Osita Mosha ✦ (Y2K Aesthetic)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Librería de Confeti Canvas -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400;1,600&family=Overpass:wght@400;600;700;800&display=swap');
+        
+        /* --- TEMAS VISUALES POR HORARIO (BACK IN BLACK / SOFT PINK) --- */
+        :root, html[data-theme="dark"] {
+            --back-in-black: #16131F;
+            --mountain-heather: #F0D9E4;
+            --decanting: #C1A0AC;
+            --funkie-friday: #4A3F4B;
+            --moonscape: #806C79;
+            --card-bg: rgba(74, 63, 75, 0.4);
+            --card-border: rgba(193, 160, 172, 0.35);
+        }
+
+        html[data-theme="softpink"] {
+            --back-in-black: #1F161A;
+            --mountain-heather: #FFD1DC;
+            --decanting: #E0A899;
+            --funkie-friday: #5C4048;
+            --moonscape: #A67B82;
+            --card-bg: rgba(92, 64, 72, 0.4);
+            --card-border: rgba(255, 209, 220, 0.4);
+        }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Andika', sans-serif;
+            background-color: var(--back-in-black);
+            color: var(--mountain-heather);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+            transition: background-color 0.8s ease, color 0.8s ease;
+        }
+
+        .font-cormorant { font-family: 'Cormorant Garamond', serif; }
+        .font-overpass { font-family: 'Overpass', sans-serif; }
+        .font-andika { font-family: 'Andika', sans-serif; }
+
+        /* --- FONDO AESTHETIC --- */
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, var(--decanting) 0%, transparent 45%),
+                radial-gradient(circle at 80% 80%, var(--funkie-friday) 0%, transparent 55%),
+                radial-gradient(circle at 50% 50%, var(--back-in-black) 0%, var(--back-in-black) 100%);
+            opacity: 0.25;
+            transition: background 0.8s ease;
+        }
+
+        .stars-background {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            background-color: var(--mountain-heather);
+            animation: twinkle linear infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.1; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .star-fast { animation-duration: 1.5s; }
+        .star-medium { animation-duration: 2.5s; }
+        .star-slow { animation-duration: 4s; }
+
+        .star-small { width: 1px; height: 1px; }
+        .star-med { width: 2px; height: 2px; }
+        .star-big { width: 3px; height: 3px; box-shadow: 0 0 6px var(--mountain-heather); }
+
+        /* --- ESTRELLAS CAYENDO --- */
+        .falling-star {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            color: var(--mountain-heather);
+            text-shadow: 0 0 8px var(--decanting);
+            animation: fallDown linear forwards;
+        }
+
+        @keyframes fallDown {
+            0% { opacity: 0; transform: translateY(-5vh) scale(0.5) rotate(0deg); }
+            15%, 85% { opacity: 0.8; }
+            100% { opacity: 0; transform: translateY(105vh) scale(1.2) rotate(180deg); }
+        }
+
+        /* --- ESTELA DE BRILLOS Y2K EN EL CURSOR --- */
+        .sparkle-trail {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 14px;
+            color: var(--mountain-heather);
+            text-shadow: 0 0 10px var(--decanting);
+            animation: fadeAndScale 0.8s forwards ease-out;
+        }
+
+        @keyframes fadeAndScale {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translate(-50%, -20px) scale(0.2) rotate(60deg); }
+        }
+
+        /* --- INTRO: CORAZÓN EN MULTI-IDIOMAS --- */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--back-in-black);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1.2s ease, visibility 1.2s ease, background-color 0.8s ease;
+            padding: 1.5rem;
+        }
+
+        #heart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 480px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .love-word {
+            position: absolute;
+            font-family: 'Overpass', sans-serif;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.3);
+            animation: fadeInWord 0.8s forwards ease-out;
+            text-shadow: 0 0 10px var(--mountain-heather);
+        }
+
+        .love-word.center-phrase {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem !important;
+            font-style: italic;
+            font-weight: 600 !important;
+            color: var(--mountain-heather) !important;
+            text-shadow: 0 0 20px var(--mountain-heather), 0 0 35px var(--decanting) !important;
+            z-index: 10;
+        }
+
+        @media (min-width: 768px) {
+            .love-word.center-phrase { font-size: 1.8rem !important; }
+        }
+
+        @keyframes fadeInWord {
+            to { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .heart-pulse { animation: pulseHeart 2.5s infinite ease-in-out alternate; }
+        @keyframes pulseHeart {
+            0% { transform: scale(0.97); }
+            100% { transform: scale(1.04); }
+        }
+
+        .btn-continue {
+            margin-top: 36px;
+            padding: 14px 40px;
+            font-family: 'Overpass', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--back-in-black);
+            background: linear-gradient(135deg, var(--mountain-heather), var(--decanting));
+            border: none;
+            border-radius: 9999px;
+            cursor: pointer;
+            box-shadow: 0 0 30px var(--decanting);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s ease, transform 0.2s;
+            z-index: 20;
+        }
+
+        .btn-continue.show { opacity: 1; pointer-events: auto; }
+        .btn-continue:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 0 40px var(--mountain-heather); }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        #main-content {
+            opacity: 0;
+            position: relative;
+            z-index: 1;
+            transition: opacity 1.5s ease;
+        }
+
+        /* --- MARCOS ESTILO MSN / VENTANAS --- */
+        .msn-window {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        /* --- TARJETAS DE REGALOS --- */
+        .card-glow {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card-glow:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--mountain-heather);
+            box-shadow: 0 12px 30px -5px var(--decanting);
+        }
+
+        .card-glow.completed {
+            background: var(--back-in-black);
+            border-color: var(--moonscape);
+            opacity: 0.65;
+        }
+
+        .card-glow.locked {
+            background: var(--back-in-black);
+            border: 1px solid var(--moonscape);
+            opacity: 0.5;
+        }
+
+        .symbol-badge {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--mountain-heather);
+            text-shadow: 0 0 15px var(--mountain-heather);
+        }
+
+        /* --- POLAROIDS Y OTROS --- */
+        .polaroid-card {
+            background: #ffffff;
+            color: #2D2A32;
+            padding: 10px 10px 25px 10px;
+            border-radius: 4px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            flex: 0 0 180px;
+            transform: rotate(var(--rot, 0deg));
+        }
+
+        .polaroid-card:hover {
+            transform: translateY(-5px) rotate(0deg) scale(1.05);
+            z-index: 10;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .video-letter-paper {
+            background-color: #F8F6F0;
+            color: #2D2A32;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 0.7s infinite;
+            font-weight: bold;
+            color: #2D2A32;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--back-in-black); }
+        ::-webkit-scrollbar-thumb { background: var(--funkie-friday); border-radius: 10px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between font-andika">
+
+    <div class="ambient-bg"></div>
+    <div class="stars-background" id="stars-background"></div>
+
+    <!-- INTRO CORAZÓN DE PALABRAS -->
+    <div id="intro-screen">
+        <div id="heart-container"></div>
+        <button id="continue-btn" class="btn-continue">Comenzar nuestro viaje ♡</button>
+    </div>
+
+    <!-- PANTALLA PRINCIPAL -->
+    <div id="main-content" class="w-full flex-1 flex flex-col items-center p-4 md:p-8">
+        
+        <header class="text-center my-6 max-w-2xl px-2">
+            <h1 class="font-cormorant text-3xl sm:text-5xl md:text-6xl font-bold italic text-transparent bg-clip-text bg-gradient-to-r from-[var(--mountain-heather)] via-[var(--decanting)] to-[var(--mountain-heather)] mb-2 tracking-wide leading-tight">
+                Feliz Aniversario, Osita Mosha
+            </h1>
+            <p class="font-andika text-[var(--decanting)] text-xs sm:text-sm md:text-base font-normal tracking-wide">
+                ✦ Para la osita más bonita del mundo ✦
+            </p>
+        </header>
+
+        <!-- Contador de Tiempo -->
+        <section class="w-full max-w-2xl msn-window p-4 sm:p-6 mb-6 text-center">
+            <p class="font-overpass text-[11px] uppercase tracking-widest text-[var(--decanting)] font-bold mb-3">Tiempo Juntos 𓆩♡𓆪</p>
+            <div class="grid grid-cols-4 gap-1 sm:gap-2 text-center">
+                <div class="p-1 sm:p-2">
+                    <span id="days" class="font-overpass text-2xl sm:text-4xl md:text-5xl font-extrabold text-[var(--mountain-heather)]">0</span>
+                    <p class="font-overpass text-[10px] sm:text-[11px] uppercase tracking-widest text-[var(--decanting)] font-bold mt-1">Días</p>
+                </div>
+                <div class="p-1 sm:p-2">
+                    <span id="hours" class="font-overpass text-2xl sm:text-4xl md:text-5xl font-extrabold text-[var(--mountain-heather)]">0</span>
+                    <p class="font-overpass text-[10px] sm:text-[11px] uppercase tracking-widest text-[var(--decanting)] font-bold mt-1">Horas</p>
+                </div>
+                <div class="p-1 sm:p-2">
+                    <span id="minutes" class="font-overpass text-2xl sm:text-4xl md:text-5xl font-extrabold text-[var(--mountain-heather)]">0</span>
+                    <p class="font-overpass text-[10px] sm:text-[11px] uppercase tracking-widest text-[var(--decanting)] font-bold mt-1">Minutos</p>
+                </div>
+                <div class="p-1 sm:p-2">
+                    <span id="seconds" class="font-overpass text-2xl sm:text-4xl md:text-5xl font-extrabold text-[var(--mountain-heather)]">0</span>
+                    <p class="font-overpass text-[10px] sm:text-[11px] uppercase tracking-widest text-[var(--decanting)] font-bold mt-1">Segundos</p>
+                </div>
+            </div>
+            <p class="font-cormorant text-xs sm:text-sm italic text-[var(--decanting)] mt-3 font-semibold">18 de Octubre, 2025 – Para Siempre ✦</p>
+        </section>
+
+        <!-- CAJITA DE RAZONES FLOTANTE -->
+        <div class="text-center mb-8 px-4">
+            <button id="jar-float-btn" class="font-cormorant text-sm sm:text-base italic text-[var(--mountain-heather)] hover:text-[var(--decanting)] transition bg-[var(--card-bg)] border border-[var(--card-border)] px-6 py-3 rounded-full shadow-lg backdrop-blur-md">
+                ✦ Haz clic para descubrir una razón por la que te amo osita ✦
+            </button>
+        </div>
+
+        <!-- Subtítulo -->
+        <div class="text-center mb-6 sm:mb-8">
+            <h2 class="font-cormorant text-xl sm:text-2xl md:text-3xl font-bold italic text-[var(--mountain-heather)] tracking-wide">Nuestra Semana de Sorpresas ✦</h2>
+            <p class="font-andika text-[11px] sm:text-xs text-[var(--moonscape)] mt-1 font-normal tracking-wider">✦ Preparado con todo mi corazón solo para ti ✦</p>
+        </div>
+
+        <!-- Grid de 7 Regalos -->
+        <main id="gifts-grid" class="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mb-16">
+            <!-- Generado dinámicamente -->
+        </main>
+    </div>
+
+    <!-- Modal para Mostrar la Sorpresa / Razones -->
+    <div id="gift-modal" class="fixed inset-0 bg-[#16131F]/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+        <div id="modal-container-box" class="msn-window p-6 md:p-8 max-w-md w-full text-center relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button id="close-modal" class="absolute top-5 right-5 text-[var(--decanting)] hover:text-[var(--mountain-heather)] text-xl transition z-10 font-overpass p-2">
+                ✕
+            </button>
+            
+            <div id="modal-icon" class="symbol-badge text-4xl italic font-bold mb-3">[🏺]</div>
+            <h3 id="modal-title" class="font-cormorant text-2xl md:text-3xl font-bold italic text-[var(--mountain-heather)] mb-1">Cajita de razones</h3>
+            <p id="modal-date" class="font-overpass text-[10px] text-[var(--decanting)] uppercase font-extrabold tracking-widest mb-5">Para mi osita mosha ✦</p>
+            
+            <div id="modal-body" class="font-andika text-[var(--mountain-heather)]/90 text-sm leading-relaxed mb-6"></div>
+            
+            <button id="modal-btn" class="font-overpass w-full bg-gradient-to-r from-[var(--decanting)] to-[var(--moonscape)] text-[var(--back-in-black)] font-extrabold tracking-wider py-3.5 rounded-2xl shadow-xl hover:opacity-95 transition transform hover:-translate-y-0.5">
+                TE AMO ✦
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- MODO DE PRUEBA DESACTIVADO ---
+        const TEST_MODE = false;
+
+        // --- CAMBIO AUTOMÁTICO DE TEMA POR HORARIO ---
+        function updateThemeByHour() {
+            const currentHour = new Date().getHours();
+            const htmlTag = document.documentElement;
+            if (currentHour >= 9 && currentHour < 18) {
+                htmlTag.setAttribute('data-theme', 'softpink');
+            } else {
+                htmlTag.setAttribute('data-theme', 'dark');
+            }
+        }
+        updateThemeByHour();
+        setInterval(updateThemeByHour, 60000);
+
+        // --- EFECTO DE AUDIO RETRO (CLIC / POP) ---
+        function playRetroClick() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.05);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } catch(e) {}
+        }
+
+        // --- RAZONES DE LA CAJITA ---
+        const reasonsList = [
+            "Por tus abrazos de oso muy abazosos tan calentitos y apretados que hacen que cualquier día difícil desaparezca al instante 𓆩♡𓆪.",
+            "Por la forma tan bonita en que te ríes de mis chistes rancios.",
+            "Por ser mi compañera osita incondicional en cada locura que se nos ocurre.",
+            "Porque a tu lado aprendí lo que realmente significa amar con calma y sentirme incondicionalmente en mi lugar seguro ✦.",
+            "Por cómo me miras cuando estamos juntos, haciéndome sentir que soy la persona más afortunada del mundo.",
+            "Por tus cartitas, tus detalles y todo el amor que le pones a cada cosa que haces.",
+            "Por aguantar mis momentos de estrés y estar siempre firme tomándome de la mano.",
+            "Por cada llamada hasta tarde donde las horas pasan volando y me ayudas a mantenerme consciente para seguir en lo que hago.",
+            "Porque amo tus gustos, tu estilo y cómo brillas siendo exactamente tú misma ⋆.",
+            "Por todos los planes, viajes y sueños que tenemos por delante y que muero por cumplir a tu lado.",
+            "Por la paz que me da saber que, pase lo que pase, tú y yo siempre nos apoyamos y lo resolvemos.",
+            "Por ser la osita más bonita, inteligente y talentosa de todo este universo.",
+            "Por cada vez que me has cuidado cuando más lo he necesitado sin pedir nada a cambio.",
+            "Porque incluso en los días grises, tu presencia es suficiente para alegrarme el corazón.",
+            "Simplemente porque eres tú, mi osita mosha, y no cambiaría ni un solo segundo de este año a tu lado ✦."
+        ];
+
+        document.getElementById('jar-float-btn').addEventListener('click', () => {
+            playRetroClick();
+            triggerConfetti();
+            const randomReason = reasonsList[Math.floor(Math.random() * reasonsList.length)];
+            
+            document.getElementById('modal-icon').innerText = "⋆";
+            document.getElementById('modal-title').innerText = "Cajita de razones";
+            document.getElementById('modal-date').innerText = "Para mi osita mosha ✦";
+            
+            const modalBox = document.getElementById('modal-container-box');
+            modalBox.className = "msn-window p-6 md:p-8 max-w-md w-full text-center relative shadow-2xl max-h-[90vh] overflow-y-auto";
+            document.getElementById('close-modal').className = "absolute top-5 right-5 text-[var(--decanting)] hover:text-[var(--mountain-heather)] text-xl transition z-10 font-overpass p-2";
+            
+            document.getElementById('modal-body').innerHTML = `
+                <div class="bg-[var(--back-in-black)]/80 border border-[var(--moonscape)]/40 rounded-2xl p-6 my-2 shadow-inner">
+                    <p class="font-cormorant text-lg italic text-[var(--mountain-heather)] font-bold leading-relaxed">
+                        "${randomReason}"
+                    </p>
+                </div>
+                <p class="text-[10px] text-[var(--decanting)] font-overpass text-center mt-3">✦ Vuelve a hacer clic afuera para sacar otra ✦</p>
+            `;
+            
+            document.getElementById('gift-modal').classList.remove('hidden');
+        });
+
+        // --- GENERADOR DE ESTRELLAS ---
+        const starsBackground = document.getElementById('stars-background');
+        function createStars() {
+            const isMobile = window.innerWidth < 768;
+            const starCount = isMobile ? 80 : 180;
+            const sizes = ['star-small', 'star-med', 'star-big'];
+            const speeds = ['star-fast', 'star-medium', 'star-slow'];
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                const sizeClass = sizes[Math.floor(Math.random() * sizes.length)];
+                const speedClass = speeds[Math.floor(Math.random() * speeds.length)];
+                star.className = `star ${sizeClass} ${speedClass}`;
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.top = `${Math.random() * 100}vh`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                starsBackground.appendChild(star);
+            }
+        }
+        createStars();
+
+        function spawnFallingStar() {
+            const symbols = ['✦', '✧', '★', '⋆', '·'];
+            const star = document.createElement('div');
+            star.className = 'falling-star';
+            star.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+            star.style.left = `${Math.random() * 98}vw`;
+            star.style.fontSize = `${Math.random() * 8 + 10}px`;
+            star.style.animationDuration = `${Math.random() * 4 + 4}s`;
+            document.body.appendChild(star);
+            setTimeout(() => star.remove(), 8000);
+        }
+        setInterval(spawnFallingStar, 600);
+
+        // --- ESTELA DE BRILLOS ---
+        const sparkleSymbols = ['✦', '✧', '★', '⋄', 'ᡣ𐭩'];
+        let lastSparkleTime = 0;
+        document.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastSparkleTime > 45) {
+                lastSparkleTime = now;
+                const sparkle = document.createElement('span');
+                sparkle.className = 'sparkle-trail';
+                sparkle.innerText = sparkleSymbols[Math.floor(Math.random() * sparkleSymbols.length)];
+                sparkle.style.left = `${e.clientX}px`;
+                sparkle.style.top = `${e.clientY}px`;
+                document.body.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 800);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('button') || e.target.closest('.card-glow')) return;
+            playRetroClick();
+            confetti({
+                particleCount: 15,
+                spread: 40,
+                origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight },
+                colors: ['#F0D9E4', '#C1A0AC', '#ffffff']
+            });
+        });
+
+        function triggerConfetti() {
+            confetti({
+                particleCount: 75,
+                spread: 65,
+                origin: { y: 0.7 },
+                colors: ['#F0D9E4', '#C1A0AC', '#806C79', '#ffffff']
+            });
+        }
+
+        // --- INTRO CORAZÓN ---
+        const loveWords = [
+            "TE AMO", "I Love You", "Je t'aime", "Ti amo", "Ich liebe dich", 
+            "Eu te amo", "Saranghae", "Aishiteru", "Ya tebya lyublyu", "S'agapo", 
+            "Mahal kita", "Aku cinta kamu", "Te quiero", "Wo ai ni", "Ina xurrke",
+            "Te adoro", "Mi vida", "Mi todo", "Eres mi mundo", "Siempre juntos"
+        ];
+
+        const heartContainer = document.getElementById('heart-container');
+        const continueBtn = document.getElementById('continue-btn');
+
+        function createHeart() {
+            const centerSpan = document.createElement('span');
+            centerSpan.className = 'love-word center-phrase';
+            centerSpan.innerText = 'Para mi linda osita Dani';
+            
+            const isMobile = window.innerWidth < 640;
+            const centerX = isMobile ? (heartContainer.clientWidth / 2) : 300;
+            const centerY = isMobile ? 200 : 210;
+            
+            centerSpan.style.left = `${centerX}px`;
+            centerSpan.style.top = `${centerY}px`;
+            heartContainer.appendChild(centerSpan);
+
+            let current = 0;
+            const interval = setInterval(() => {
+                if (current >= loveWords.length) {
+                    clearInterval(interval);
+                    heartContainer.classList.add('heart-pulse');
+                    continueBtn.classList.add('show');
+                    return;
+                }
+
+                // Ajuste de curva matemática para distribución más holgada del corazón
+                const t = (current / loveWords.length) * Math.PI * 2;
+                const scaleFactor = isMobile ? 12 : 16;
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+
+                const posX = x * scaleFactor + centerX;
+                // Elevamos ligeramente la posición vertical (-25px) para alejar la punta inferior del botón
+                const posY = y * scaleFactor + (centerY - 25);
+
+                const span = document.createElement('span');
+                span.className = 'love-word';
+                span.innerText = loveWords[current];
+                span.style.fontSize = `${Math.random() * 0.15 + (isMobile ? 0.7 : 0.8)}rem`;
+                span.style.left = `${posX}px`;
+                span.style.top = `${posY}px`;
+
+                heartContainer.appendChild(span);
+                current++;
+            }, 100);
+        }
+        createHeart();
+
+        continueBtn.addEventListener('click', () => {
+            playRetroClick();
+            const intro = document.getElementById('intro-screen');
+            const main = document.getElementById('main-content');
+            intro.style.opacity = '0';
+            setTimeout(() => {
+                intro.style.visibility = 'hidden';
+                main.style.opacity = '1';
+                triggerConfetti();
+            }, 1200);
+        });
+
+        // --- CONTADOR ---
+        const startDate = new Date(2025, 9, 18, 0, 0, 0);
+        function updateCounter() {
+            const now = new Date();
+            const diff = now - startDate;
+            document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+            document.getElementById('hours').innerText = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+        }
+        setInterval(updateCounter, 1000);
+        updateCounter();
+
+        // --- LOS 7 REGALOS ---
+        const gifts = [
+            {
+                id: 1,
+                dayName: "Lunes 12",
+                unlockDate: new Date(2026, 9, 12, 0, 0, 0),
+                symbol: "𝒩° 𝟶1",
+                title: "Cupón válido para cita en el cine",
+                type: "ticket",
+                movie: "Tu Nombre (Your Name)",
+                dateTime: "12 de Octubre, 07:00 PM",
+                cinema: "Cine Diana",
+                seats: "C-5, C-4 (Sala 5)",
+                orderNum: "Orden 5196",
+                qrCode: "WGFZZRF",
+                message: "Iniciamos nuestra semana de aniversario celebrando con una cita muy especial. Vamos a ver una de las historias más hermosas. Prepárate para una semana llena de sorpresas."
+            },
+            {
+                id: 2,
+                dayName: "Martes 13",
+                unlockDate: new Date(2026, 9, 13, 0, 0, 0),
+                symbol: "♫",
+                title: "Para mi Osita Mosha",
+                type: "spotify",
+                spotifyId: "0avG7UAV54O7TVfDGr4j5S",
+                message: "La música suena mejor cuando estás tú. Hice esta playlist con canciones que me atrapan así como tus abrazos de oso muy abrazosos, para que acompañes tus días con musica de ositos y recordarte que, pase lo que pase, eres mi canción favorita. ♫"
+            },
+            {
+                id: 3,
+                dayName: "Miércoles 14",
+                unlockDate: new Date(2026, 9, 14, 0, 0, 0),
+                symbol: "⟡",
+                title: "Cápsula del Tiempo",
+                type: "polaroid-gallery",
+                message: "Un recorrido por nuestros momentos más especiales, bonitos y divertidos de todo este año juntos. Desliza para ver nuestras fotos ✦",
+                photos: [
+                    { url: "img/1.jpg", caption: "our beginning 𓆩♡𓆪", rot: "-3deg" },
+                    { url: "img/2.jpg", caption: "core memory ✧", rot: "2deg" },
+                    { url: "img/3.jpg", caption: "pure magic ✦", rot: "-2deg" },
+                    { url: "img/4.jpg", caption: "favorite view ⋆", rot: "3deg" },
+                    { url: "img/5.jpg", caption: "my whole world ", rot: "-1deg" },
+                    { url: "img/6.jpg", caption: "timeless ", rot: "2deg" },
+                    { url: "img/7.jpg", caption: "unconditional ", rot: "-2deg" },
+                    { url: "img/8.jpg", caption: "never letting go ⟡", rot: "3deg" },
+                    { url: "img/9.jpg", caption: "sweet escape ᡣ𐭩", rot: "-3deg" },
+                    { url: "img/10.jpg", caption: "forever us ⋆", rot: "1deg" },
+                    { url: "img/11.jpg", caption: "glitch in reality ", rot: "-2deg" },
+                    { url: "img/12.jpg", caption: "chapter one ✦", rot: "2deg" },
+                    { url: "img/13.jpg", caption: "infinity ", rot: "-1deg" }
+                ]
+            },
+            {
+                id: 4,
+                dayName: "Jueves 15",
+                unlockDate: new Date(2026, 9, 15, 0, 0, 0),
+                symbol: "◈",
+                title: "Un Detalle Especial",
+                type: "coupon",
+                couponCode: "OSITO-VIP-2026",
+                couponSubtitle: "CUPÓN EXCLUSIVO",
+                couponTitle: "Vale por un regalo especial",
+                couponBody: "Presentar este cupón con General osito para entrega ✦",
+                message: "Un pequeño secreto guardado en una caja solo para ti. Presenta esta pantalla al General Osito para tu entrega oficial ✧"
+            },
+            {
+                id: 5,
+                dayName: "Viernes 16",
+                unlockDate: new Date(2026, 9, 16, 0, 0, 0),
+                symbol: "✉",
+                title: "La Noche Antes de Nuestro Aniversario",
+                type: "letter",
+                letterTitle: "Para el amor de mi vida:",
+                letterBody: `No puedo creer lo rápido que se pasó este año a tu lado. Parece que fue ayer cuando te vi en la universidad y me enamoré de ti en ese mismo instante. Sé que a veces no crees en el amor a primera vista, pero yo desde ese preciso momento sabía que quería pasar mi vida a tu lado; sabía que eras tú la persona con quien quería construir mi camino. Y hoy, estamos a solo unas horas de cumplir oficialmente nuestro primer aniversario, mi osita bebé.\n\nTe escribo esta cartita porque no aguantaba las ganas de decirte lo emocionado e ilusionado que estoy por todo lo que viene. Sé que a veces la rutina o el día a día nos llevan de prisa, y sé que ambos tenemos días difíciles y problemas, pero me llena de felicidad saber que, al final de todo, siempre de una u otra forma tú y yo lo resolvemos. Nos escuchamos, nos apoyamos y salimos adelante juntos. A pesar de cualquier tempestad, momentos como este me hacen detenerme, suspirar y agradecer profundamente al destino por tenerte en mi vida.\n\nMirar hacia atrás y ver todo lo que hemos compartido en estos 365 días me llena el corazón. Cada salida, cada llamada hasta tarde, cada abrazo cuando más lo necesitaba, cada risa compartida por la cosa más simple y cada mirada en la que no hacían falta las palabras... todo ha valido completamente la pena. Contigo he aprendido lo que realmente significa amar y sentirse amado sin reservas, con calma y con la certeza de que encontré mi lugar seguro en el mundo.\n\nGracias por cada detalle, por tu ternura, por aguantarme, por cuidarme y por ser mi compañera incondicional en todo este camino. Eres lo más bonito que me ha pasado y no cambiaría absolutamente nada de lo que hemos vivido juntos, porque cada instante nos ha traído hasta aquí, más fuertes y más unidos que nunca. Ambos tenemos muchísimos plans y sueños por cumplir, los cuales ansío con toda mi alma realizar, ya que a tu lado sé perfectamente que todo es posible.\n\nDescansa muy rico hoy, mi vida. Prepárate para un fin de semana lleno de magia solo para nosotros dos, para celebrar este primer capítulo de muchos más que nos quedan por escribir.`,
+                letterSign: "— Ed:die"
+            },
+            {
+                id: 6,
+                dayName: "Sábado 17",
+                unlockDate: new Date(2026, 9, 17, 0, 0, 0),
+                symbol: "⚜",
+                title: "¡Nos Vamos de Cita!",
+                type: "coupon",
+                couponCode: "HELADITO-OSITO-2026",
+                couponSubtitle: "CUPÓN DULCE",
+                couponTitle: "Salida Especial ✦",
+                couponBody: "Válido por un heladito con osito ✦",
+                message: "Válido por una cita dulce con el General Osito. ¿Lista para la aventura? ✦"
+            },
+            {
+                id: 7,
+                dayName: "Domingo 18",
+                unlockDate: new Date(2026, 9, 18, 0, 0, 0),
+                symbol: "✦ 𝒳𝒪 ✦",
+                title: "¡Feliz 1er Aniversario!",
+                type: "letter",
+                letterTitle: "¡Feliz 1er Aniversario, mi vida! ✦",
+                letterBody: `Espero con todo mi corazón que hayas disfrutado muchísimo cada pequeña sorpresa de esta semana de aniversario. Preparar cada detalle para ti fue mi manera de recordarte lo ridículamente especial e importante que eres en mi vida.\n\nHoy cumplimos oficialmente nuestro primer año juntos, y no puedo evitar sentirme profundamente agradecido por haberte encontrado y por cada segundo que hemos compartido. Gracias por ser mi lugar seguro, por tus abrazos que curan todo, por las risas infinitas y por hacerme el hombre más feliz del mundo día con día.\n\nEste primer año es solo el comienzo de toda una vida de aventuras, sueños compartidos y recuerdos hermosos por construir a tu lado. Eres y siempre serás mi persona favorita.`,
+                letterSign: "— Tu General Osito [🧸]"
+            }
+        ];
+
+        const grid = document.getElementById('gifts-grid');
+        const modal = document.getElementById('gift-modal');
+
+        function isUnlocked(gift) {
+            if (TEST_MODE) return true;
+            return new Date() >= gift.unlockDate;
+        }
+
+        function renderGifts() {
+            grid.innerHTML = '';
+            gifts.forEach((gift) => {
+                const card = document.createElement('div');
+                const unlocked = isUnlocked(gift);
+                card.className = `card-glow cursor-pointer rounded-3xl p-6 flex flex-col items-center justify-center text-center relative overflow-hidden text-[var(--mountain-heather)] ${!unlocked ? 'locked' : ''}`;
+
+                card.innerHTML = `
+                    <div class="font-overpass text-[10px] uppercase font-extrabold tracking-widest px-3.5 py-1 rounded-full mb-3 bg-[var(--moonscape)]/30 text-[var(--mountain-heather)] border border-[var(--moonscape)]/20">
+                        ${gift.dayName} ${!unlocked ? '[🔒]' : '✦'}
+                    </div>
+                    <div class="symbol-badge text-3xl md:text-4xl italic font-bold my-2 tracking-wider ${!unlocked ? 'opacity-40' : ''}">
+                        ${gift.symbol}
+                    </div>
+                    <p class="font-andika text-[11px] tracking-wider uppercase mt-2 text-[var(--mountain-heather)]">
+                        ${unlocked ? '¡Toca para abrir! ✦' : 'Próximamente [🔒]'}
+                    </p>
+                `;
+
+                if (unlocked) {
+                    card.addEventListener('click', () => openGift(gift));
+                } else {
+                    card.addEventListener('click', () => alert("✦ Este regalo estará disponible el " + gift.dayName + " ✦"));
+                }
+                grid.appendChild(card);
+            });
+        }
+
+        let typingTimeout = null;
+
+        function openGift(gift) {
+            playRetroClick();
+            triggerConfetti();
+            if (typingTimeout) clearTimeout(typingTimeout);
+
+            document.getElementById('modal-icon').innerText = gift.symbol;
+            document.getElementById('modal-title').innerText = gift.title;
+            document.getElementById('modal-date').innerText = gift.dayName + " - Sorpresa Especial";
+            const modalBox = document.getElementById('modal-container-box');
+
+            if (gift.type === "letter") {
+                modalBox.className = "video-letter-paper border border-[#D1C7B7] rounded-2xl p-6 md:p-10 max-w-lg w-full text-left relative shadow-2xl max-h-[90vh] overflow-y-auto";
+                document.getElementById('close-modal').className = "absolute top-4 right-4 text-[#7A7268] hover:text-[#2D2A32] text-xl transition z-10 font-overpass p-2";
+                document.getElementById('modal-icon').className = "font-andika text-[#7A7268] text-2xl mb-1";
+                document.getElementById('modal-title').className = "font-andika text-xl md:text-2xl font-bold text-[#2D2A32] mb-1";
+                document.getElementById('modal-date').className = "font-andika text-[10px] text-[#8C8275] uppercase tracking-widest mb-6 font-bold";
+                
+                document.getElementById('modal-body').innerHTML = `
+                    <div class="font-andika text-[#2D2A32] text-xs sm:text-sm leading-relaxed space-y-4">
+                        <p class="font-bold border-b border-[#D1C7B7] pb-2 text-base text-[#16131F]" id="letter-title-slot"></p>
+                        <p class="whitespace-pre-line text-[#2D2A32]/90 typing-cursor" id="letter-body-slot"></p>
+                        <div class="text-right italic font-bold mt-8 pt-3 border-t border-[#D1C7B7] text-[#16131F]" id="letter-sign-slot"></div>
+                    </div>
+                    <button id="skip-typing" class="mt-4 text-[10px] uppercase tracking-widest text-[#7A7268] hover:text-[#2D2A32] underline font-bold block ml-auto">Yaaaaaaaa RAPIDOOOO ⏭</button>
+                `;
+
+                const titleText = gift.letterTitle;
+                const bodyText = gift.letterBody;
+                const signText = gift.letterSign;
+                
+                let tIndex = 0, bIndex = 0, sIndex = 0;
+                const titleSlot = document.getElementById('letter-title-slot');
+                const bodySlot = document.getElementById('letter-body-slot');
+                const signSlot = document.getElementById('letter-sign-slot');
+                const skipBtn = document.getElementById('skip-typing');
+
+                function typeWriter() {
+                    if (tIndex < titleText.length) {
+                        titleSlot.textContent += titleText.charAt(tIndex);
+                        tIndex++;
+                        typingTimeout = setTimeout(typeWriter, 35);
+                    } else if (bIndex < bodyText.length) {
+                        const currentChar = bodyText.charAt(bIndex);
+                        bodySlot.textContent += currentChar;
+                        bIndex++;
+                        let delay = (currentChar === '.' || currentChar === '!') ? 280 : (currentChar === ',' ? 140 : (currentChar === '\n' ? 350 : 38));
+                        typingTimeout = setTimeout(typeWriter, delay);
+                    } else if (sIndex < signText.length) {
+                        bodySlot.classList.remove('typing-cursor');
+                        signSlot.textContent += signText.charAt(sIndex);
+                        sIndex++;
+                        typingTimeout = setTimeout(typeWriter, 45);
+                    } else {
+                        bodySlot.classList.remove('typing-cursor');
+                        if (skipBtn) skipBtn.style.display = 'none';
+                    }
+                }
+
+                skipBtn.addEventListener('click', () => {
+                    if (typingTimeout) clearTimeout(typingTimeout);
+                    titleSlot.textContent = titleText;
+                    bodySlot.textContent = bodyText;
+                    bodySlot.classList.remove('typing-cursor');
+                    signSlot.textContent = signText;
+                    skipBtn.style.display = 'none';
+                });
+
+                typeWriter();
+                document.getElementById('modal-btn').className = "font-andika w-full mt-6 bg-[#2D2A32] text-[#F8F6F0] font-bold tracking-wider py-3.5 rounded-xl shadow-lg";
+            } else {
+                modalBox.className = "msn-window p-6 md:p-8 max-w-md w-full text-center relative shadow-2xl max-h-[90vh] overflow-y-auto";
+                document.getElementById('close-modal').className = "absolute top-5 right-5 text-[var(--decanting)] hover:text-[var(--mountain-heather)] text-xl transition z-10 font-overpass p-2";
+                document.getElementById('modal-icon').className = "symbol-badge text-4xl italic font-bold mb-3";
+                document.getElementById('modal-title').className = "font-cormorant text-2xl md:text-3xl font-bold italic text-[var(--mountain-heather)] mb-1";
+                document.getElementById('modal-date').className = "font-overpass text-[10px] text-[var(--decanting)] uppercase font-extrabold tracking-widest mb-5";
+                document.getElementById('modal-btn').className = "font-overpass w-full bg-gradient-to-r from-[var(--decanting)] to-[var(--moonscape)] text-[var(--back-in-black)] font-extrabold tracking-wider py-3.5 rounded-2xl shadow-xl";
+
+                if (gift.type === "polaroid-gallery") {
+                    let polaroidsHTML = gift.photos.map(p => `
+                        <div class="polaroid-card" style="--rot: ${p.rot};">
+                            <div class="w-full h-36 bg-gray-100 rounded-sm overflow-hidden mb-2 shadow-inner">
+                                <img src="${p.url}" alt="Foto" class="w-full h-full object-cover">
+                            </div>
+                            <p class="font-cormorant text-[#2D2A32] text-sm italic font-bold text-center">${p.caption}</p>
+                        </div>
+                    `).join('');
+
+                    document.getElementById('modal-body').innerHTML = `
+                        <p class="font-andika text-[var(--mountain-heather)]/80 text-xs mb-4">${gift.message}</p>
+                        <div class="bg-[var(--back-in-black)]/60 border border-[var(--moonscape)]/30 rounded-2xl p-4 my-2">
+                            <div class="flex gap-4 overflow-x-auto no-scrollbar py-3 px-2">${polaroidsHTML}</div>
+                            <p class="text-[10px] text-[var(--decanting)] font-overpass text-center mt-2">← Desliza para ver más →</p>
+                        </div>
+                    `;
+                } else if (gift.type === "ticket") {
+                    document.getElementById('modal-body').innerHTML = `
+                        <p class="font-andika text-[var(--mountain-heather)]/80 text-xs mb-4">${gift.message}</p>
+                        <div class="bg-gradient-to-b from-[var(--back-in-black)] via-[var(--funkie-friday)]/60 to-[var(--back-in-black)] border border-[var(--moonscape)]/40 rounded-2xl p-5 shadow-2xl text-left relative my-3">
+                            <div class="flex flex-col items-center mb-4 text-center">
+                                <div class="bg-white p-3 rounded-2xl shadow-lg">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=${gift.qrCode}" alt="QR" class="w-28 h-28 object-contain">
+                                    <p class="text-black font-mono font-bold text-xs mt-1">${gift.qrCode}</p>
+                                </div>
+                            </div>
+                            <p class="font-cormorant text-xl font-bold text-[var(--mountain-heather)]">${gift.movie}</p>
+                            <p class="font-andika text-xs text-[var(--mountain-heather)] mt-1">${gift.dateTime} • ${gift.cinema}</p>
+                        </div>
+                    `;
+                } else if (gift.type === "spotify") {
+                    document.getElementById('modal-body').innerHTML = `
+                        <p class="font-andika text-[var(--mountain-heather)]/80 text-xs mb-4">${gift.message}</p>
+                        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/${gift.spotifyId}?utm_source=generator&theme=0" width="100%" height="352" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    `;
+                } else if (gift.type === "coupon") {
+                    document.getElementById('modal-body').innerHTML = `
+                        <p class="font-andika text-xs text-[var(--mountain-heather)]/80 mb-4">${gift.message}</p>
+                        <div class="bg-gradient-to-br from-[var(--back-in-black)] via-[var(--funkie-friday)]/80 to-[var(--back-in-black)] border-2 border-dashed border-[var(--decanting)]/50 rounded-2xl p-5 shadow-2xl text-center relative overflow-hidden my-3">
+                            <div class="font-overpass text-[10px] font-extrabold text-[var(--decanting)] tracking-widest uppercase mb-1">${gift.couponSubtitle}</div>
+                            <h4 class="font-cormorant text-2xl font-bold text-[var(--mountain-heather)] mb-3">${gift.couponTitle}</h4>
+                            <div class="bg-[var(--back-in-black)]/80 border border-[var(--moonscape)]/30 rounded-xl p-3 mb-4">
+                                <p class="font-andika text-xs text-[var(--mountain-heather)]/90 leading-relaxed">${gift.couponBody}</p>
+                            </div>
+                            <div class="flex items-center justify-between border-t border-[var(--moonscape)]/30 pt-3 text-left text-xs">
+                                <div>
+                                    <p class="font-overpass text-[9px] text-[var(--decanting)] uppercase font-bold">Válido para:</p>
+                                    <p class="font-andika font-normal text-[var(--mountain-heather)]">Dani (Osita Mosha)</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-overpass text-[9px] text-[var(--decanting)] uppercase font-bold">Código:</p>
+                                    <p class="font-mono font-bold text-[var(--mountain-heather)]">${gift.couponCode}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        document.getElementById('close-modal').addEventListener('click', () => {
+            playRetroClick();
+            if (typingTimeout) clearTimeout(typingTimeout);
+            modal.classList.add('hidden');
+        });
+
+        document.getElementById('modal-btn').addEventListener('click', () => {
+            playRetroClick();
+            if (typingTimeout) clearTimeout(typingTimeout);
+            modal.classList.add('hidden');
+            triggerConfetti();
+        });
+
+        renderGifts();
+    </script>
+</body>
+</html>
